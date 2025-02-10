@@ -1,28 +1,50 @@
-import {useState} from 'react';
-import logo from './assets/images/logo-universal.png';
-import './App.css';
-import {Greet} from "../wailsjs/go/main/App";
+import "./App.css"
+import {Button, List} from "antd"
+import Task from "./components/Task"
+import {useState} from "react";
+import FatherTask from "./components/FatherTask";
 
-function App() {
-    const [resultText, setResultText] = useState("Please enter your name below 👇");
-    const [name, setName] = useState('');
-    const updateName = (e: any) => setName(e.target.value);
-    const updateResultText = (result: string) => setResultText(result);
-
-    function greet() {
-        Greet(name).then(updateResultText);
-    }
-
-    return (
-        <div id="App">
-            <img src={logo} id="logo" alt="logo"/>
-            <div id="result" className="result">{resultText}</div>
-            <div id="input" className="input-box">
-                <input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text"/>
-                <button className="btn" onClick={greet}>Greet</button>
-            </div>
-        </div>
-    )
+interface Task {
+    parent?: string;
 }
 
-export default App
+export default function () {
+    const [data, setData] = useState<string[]>([]);
+
+    const onPushBack = (values: Task) => {
+        console.log('Success:', values);
+        setData([...data, values.parent!]);
+    };
+
+    return (
+        <>
+            <h1>TodoList</h1>
+            <hr className={"horizontal"}></hr>
+
+            <div id={"body"}>
+                {data.length != 0 && <List
+                    className={"content"}
+                    bordered
+                    dataSource={data}
+                    renderItem={(item, index) => (
+                        <List.Item>
+                            <FatherTask text={item} setText={
+                                (text) => {
+                                    setData([...data.slice(0, index), text, ...data.slice(index + 1)]);
+                                }
+                            } onDelete={
+                                () => {
+                                    console.log("delete item.");
+                                    setData([...data.slice(0, index), ...data.slice(index + 1)]);
+                                }
+                            }></FatherTask>
+                        </List.Item>
+                    )}
+                />}
+            </div>
+            <Button className={"submit"} type={"primary"} onClick={() => {
+                onPushBack({parent: "新任务"});
+            }}>+</Button>
+        </>
+    );
+}
