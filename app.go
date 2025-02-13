@@ -12,6 +12,7 @@ type Todo struct {
 
 // NewApp creates a new Todo application struct
 func NewApp() *Todo {
+	todoapp.Initialise()
 	return &Todo{}
 }
 

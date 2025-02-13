@@ -1,8 +1,8 @@
 import "./App.css"
 import {Button, List} from "antd"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import FatherTask from "./components/FatherTask";
-import {SetTasks} from "../wailsjs/go/main/Todo";
+import {LoadTasks, SetTasks} from "../wailsjs/go/main/Todo";
 import {todocore} from "../wailsjs/go/models";
 import IFatherTask = todocore.IFatherTask;
 import ITask = todocore.ITask;
@@ -10,6 +10,14 @@ import ITask = todocore.ITask;
 
 export default function () {
     const [data, setData] = useState<IFatherTask[]>([]);
+
+    useEffect(() => {
+        LoadTasks().then((tasks) => {
+            setData(tasks);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
 
     const setDataDeco = (tasks: IFatherTask[]) => {
         setData(tasks);

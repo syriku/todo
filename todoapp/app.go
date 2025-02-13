@@ -18,3 +18,15 @@ func (a *Todo) Greet(name string) string {
 func (a *Todo) SetTasks(tasks []todocore.IFatherTask) {
 	todocore.Tasks = tasks
 }
+
+func (a *Todo) LoadTasks() []todocore.IFatherTask {
+	return todocore.Tasks
+}
+
+func Finalise() {
+	todocore.Save()
+}
+
+func Initialise() {
+	todocore.Load()
+}
