@@ -1,19 +1,22 @@
-# README
+# Todo
 
-## About
+a simple todo list app. It supports the following features:
 
-This is the official Wails React-TS template.
+1. Add a new todo item
+2. add a sub item
+3. Mark a todo item as done
+4. Delete a todo item
+5. load last saved todo list when app starts
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## build
 
-## Live Development
+wails v2(v2.9) needed.
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+run `wails build` in the root dir to build the app.
 
-## Building
+## structure
 
-To build a redistributable, production mode package, use `wails build`.
+- `main.go`: the main entry of the app
+- `frontent`: the frontend code with react
+- `todoapp`: interface between frontend and backend
+- `todocore`: saving & loading logic of todo list
