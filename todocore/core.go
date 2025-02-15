@@ -46,8 +46,9 @@ func createCache() (*os.File, error) {
 	cacheDir := filepath.Dir(cacheFile)
 	_, err := os.Stat(cacheDir)
 	if os.IsNotExist(err) {
-		os.MkdirAll(cacheDir, os.ModePerm)
-	} else if err != nil {
+		err = os.MkdirAll(cacheDir, os.ModePerm)
+	}
+	if err != nil {
 		return nil, err
 	}
 	return os.Create(cacheFile)
