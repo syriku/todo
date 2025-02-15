@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 )
 
 type ITask struct {
@@ -20,13 +22,40 @@ type IFatherTask struct {
 
 var Tasks []IFatherTask
 
-func Save() {
-	cwd, err := os.Getwd()
-	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, "Error getting current working directory: ", err)
-		return
+const todoCache = "todo-cache"
+
+func init() {
+	Tasks = make([]IFatherTask, 0)
+}
+
+func getCache() string {
+	var baseDir string
+	switch runtime.GOOS {
+	case "windows", "linux":
+		home, _ := os.UserHomeDir()
+		baseDir = filepath.Join(home, todoCache)
+	case "darwin":
+		home, _ := os.UserHomeDir()
+		baseDir = filepath.Join(home, "Library", "Application Support", todoCache)
 	}
-	file, err := os.Create(cwd + "/tasks.json")
+	return filepath.Join(baseDir, "tasks.json")
+}
+
+func createCache() (*os.File, error) {
+	cacheFile := getCache()
+	cacheDir := filepath.Dir(cacheFile)
+	_, err := os.Stat(cacheDir)
+	if os.IsNotExist(err) {
+		os.MkdirAll(cacheDir, os.ModePerm)
+	} else if err != nil {
+		return nil, err
+	}
+	return os.Create(cacheFile)
+}
+
+func Save() {
+	// cwd, err := os.Getwd()
+	file, err := createCache()
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, "Error creating file: ", err)
 		return
@@ -34,17 +63,21 @@ func Save() {
 	defer func(file *os.File) {
 		_ = file.Close()
 	}(file)
-	jsonStr, _ := json.Marshal(Tasks)
+	jsonStr, err := json.Marshal(Tasks)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error on marshal: %s", err)
+		return
+	}
+	// fmt.Printf("Save:\n%s\nto %s", jsonStr, file.Name())
 	_, _ = file.Write(jsonStr)
 }
 
 func Load() {
-	cwd, err := os.Getwd()
-	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, "Error getting current working directory: ", err)
+	cacheFile := getCache()
+	file, err := os.Open(cacheFile)
+	if os.IsNotExist(err) {
 		return
 	}
-	file, err := os.Open(cwd + "/tasks.json")
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, "Error opening file tasks: ", err)
 		return
