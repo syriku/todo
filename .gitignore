@@ -1,3 +1,7 @@
 build/bin
 node_modules
 frontend/dist
+frontend/wailsjs
+.idea
+tasks.json
+*.DS_Store
