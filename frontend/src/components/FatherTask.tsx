@@ -2,6 +2,8 @@ import Task from "./Task";
 import {Button, Flex, List} from "antd";
 import {todocore} from "../../wailsjs/go/models";
 import ITask = todocore.ITask;
+import ComboButton from "./ComboButton";
+
 
 export default function ({className, text, onChange, completed = false, onDelete, children, expand}: {
     className?: string,
@@ -12,6 +14,16 @@ export default function ({className, text, onChange, completed = false, onDelete
     children: ITask[],
     expand: boolean
 }) {
+    function newChild(isComment: boolean) {
+        let newChild: ITask = new ITask({
+            content: isComment?"注释":"新任务",
+            completed: false,
+            id: crypto.randomUUID(),
+            isComment
+        });
+        children.push(newChild);
+        onChange(text, completed, children, expand);
+    }
     return (
         <Flex vertical style={{width: '100%'}}>
             <Flex style={{width: '100%'}}>
@@ -26,7 +38,7 @@ export default function ({className, text, onChange, completed = false, onDelete
             {expand && children.length != 0 &&
                 <List className={className} dataSource={children} renderItem={(item, index) =>
                     <List.Item key={item.id} style={{width: "100%"}}>
-                        <Task className={"sub-content"} text={item.content} completed={item.completed} onDelete={() => {
+                        <Task isComment={item.isComment} className={"sub-content"} text={item.content} completed={item.completed} onDelete={() => {
                             children = [...children.slice(0, index), ...children.slice(index + 1)];
                             onChange(text, completed, children, expand);
                         }} onChange={(newText, newCompleted) => {
@@ -37,15 +49,7 @@ export default function ({className, text, onChange, completed = false, onDelete
                     </List.Item>
                 }></List>
             }
-            {expand && <Button className={"submit"} style={{marginLeft: "80%"}} onClick={()=>{
-                let newChild: ITask = new ITask({
-                    content: "新任务",
-                    completed: false,
-                    id: crypto.randomUUID()
-                });
-                children.push(newChild);
-                onChange(text, completed, children, expand);
-            }}>+</Button>}
+            {expand && <ComboButton className={"submit"} style={{marginLeft: "80%"}} mainClicked={()=>newChild(false)} subClicked={()=>newChild(true)}></ComboButton>}
         </Flex>
     );
 }

@@ -12,6 +12,7 @@ type ITask struct {
 	Content   string `json:"content"`
 	Completed bool   `json:"completed"`
 	Id        string `json:"id"`
+	IsComment bool   `json:"isComment"`
 }
 
 type IFatherTask struct {
