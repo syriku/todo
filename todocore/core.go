@@ -34,7 +34,7 @@ func getCache() string {
 	switch runtime.GOOS {
 	case "windows", "linux":
 		home, _ := os.UserHomeDir()
-		baseDir = filepath.Join(home, todoCache)
+		baseDir = filepath.Join(home, "Documents", todoCache)
 	case "darwin":
 		home, _ := os.UserHomeDir()
 		baseDir = filepath.Join(home, "Library", "Application Support", todoCache)
