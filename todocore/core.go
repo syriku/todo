@@ -56,7 +56,6 @@ func createCache() (*os.File, error) {
 }
 
 func Save() {
-	// cwd, err := os.Getwd()
 	file, err := createCache()
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, "Error creating file: ", err)
@@ -67,10 +66,9 @@ func Save() {
 	}(file)
 	jsonStr, err := json.Marshal(Tasks)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error on marshal: %s", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error on marshal: %s", err)
 		return
 	}
-	// fmt.Printf("Save:\n%s\nto %s", jsonStr, file.Name())
 	_, _ = file.Write(jsonStr)
 }
 

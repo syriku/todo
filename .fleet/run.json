@@ -1,0 +1,60 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "dev",
+            "program": "wails",
+            "args": [
+                "dev"
+            ]
+        },
+        {
+            "type": "command",
+            "name": "build mac",
+            "program": "wails",
+            "args": [
+                "build",
+                "-platform",
+                "darwin/arm64"
+            ]
+        },
+        {
+            "type": "command",
+            "name": "build windows",
+            "program": "wails",
+            "args": [
+                "build",
+                "-platform",
+                "windows/amd64",
+                "-skipbindings"
+            ],
+            "dependsOn": ["build mac"]
+        },
+        {
+            "type": "command",
+            "name": "build frontend",
+            "program": "npm",
+            "args": [
+                "run",
+                "build"
+            ],
+            "workingDir": "frontend/"
+        },
+        {
+            "type": "go",
+            "name": "debug go",
+            "goExecPath": "go",
+            "buildParams": [
+                "-tags",
+                "dev",
+                "-gcflags",
+                "all=-N -l",
+                "-o",
+                "build/bin/todo"
+            ],
+            "dependsOn": [
+                "build frontend"
+            ]
+        }
+    ]
+}

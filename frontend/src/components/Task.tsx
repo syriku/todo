@@ -1,12 +1,26 @@
 import {Button, Checkbox, Flex, Input} from "antd";
+import RearrangeButton from "./RearrangeButton";
 
-export default function ({className, text, onChange, completed = false, onDelete, isComment = false}: {
+export default function ({
+                             className,
+                             text,
+                             onChange,
+                             completed = false,
+                             onDelete,
+                             isComment = false,
+                             turnDown = () => {
+                             },
+                             turnUp = () => {
+                             }
+                         }: {
     className?: string,
     text: string,
     onChange: (text: string, completed: boolean) => void,
     completed?: boolean,
     onDelete?: () => void,
     isComment?: boolean,
+    turnUp?: () => void,
+    turnDown?: () => void
 }) {
     const textStyle = {
         textDecoration: completed ? "line-through" : "none",
@@ -22,6 +36,7 @@ export default function ({className, text, onChange, completed = false, onDelete
                    variant="borderless">
             </Input>
             {!onDelete || <Button type={"primary"} danger onClick={onDelete} size={"small"}>X</Button>}
+            <RearrangeButton turnDown={turnDown} turnUp={turnUp}></RearrangeButton>
         </Flex>
     );
 }

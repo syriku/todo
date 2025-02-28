@@ -67,7 +67,15 @@ export default function () {
                                     console.log("delete item.");
                                     setDataDeco([...data.slice(0, index), ...data.slice(index + 1)]);
                                 }
-                            } completed={item.completed}>{item.children}</FatherTask>
+                            } completed={item.completed}
+                                        turnDown={() => {
+                                            if (index >= data.length - 1) return;
+                                            setDataDeco([...data.slice(0, index), data[index + 1], data[index], ...data.slice(index + 2)]);
+                                        }}
+                                        turnUp={() => {
+                                            if (index == 0) return;
+                                            setDataDeco([...data.slice(0, index - 1), data[index], data[index - 1], ...data.slice(index + 1)]);
+                                        }}>{item.children}</FatherTask>
                         </List.Item>
                     )}
                 /> : <p>{"No Todo"}</p>}
